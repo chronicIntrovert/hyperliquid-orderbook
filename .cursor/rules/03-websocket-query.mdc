@@ -1,0 +1,26 @@
+---
+description: WebSocket lifecycle, TanStack Query cache, and two-hook pattern
+globs: src/hooks/**/*,src/lib/**/*
+alwaysApply: false
+---
+
+# WebSocket & TanStack Query
+
+## Two-Hook Pattern
+
+- **useOrderbookSocket(coin, precisionLevel)**: Owns WebSocket lifecycle — one connection; subscribe with `{ type: 'l2Book', coin, ...precisionLevelToSubscription(precisionLevel) }` (nSigFigs + optional mantissa). onmessage → `processOrderbookData` → `setQueryData(queryKeys.orderbook(coin, precisionLevel), data)`. Also updates `queryKeys.connection`. On coin/precisionLevel change: unsubscribe then subscribe on the **same** socket; close only on unmount or reconnect after disconnect.
+- **useOrderbook(coin, precisionLevel)**: Consumer only — `useQuery` with that key, `staleTime: Infinity`, no refetch. No `queryFn`; WebSocket fills the cache.
+
+## Query Keys
+
+- Use `queryKeys` from `src/types`: `queryKeys.orderbook(coin, precisionLevel)`, `queryKeys.connection`. Do not hardcode key arrays elsewhere.
+
+## WebSocket Behavior (PRD Section 12)
+
+- On param change: unsubscribe current subscription, clear that orderbook from cache, then subscribe to new (coin, precisionLevel) on the same WebSocket. Open a new socket only when (re)connecting after disconnect.
+- Reconnect: exponential backoff (e.g. constants in `utils/constants.ts`), max attempts. On close/error, set connection status and retry; on max retries, set error state (manual retry optional).
+- Subscription: `precisionLevelToSubscription(precisionLevel)` in `utils/constants.ts` maps UI precision (1, 2, 5, 10, 100, 1000) to API params: 1→nSigFigs 5; 2→nSigFigs 5, mantissa 2; 5→nSigFigs 5, mantissa 5; 10→nSigFigs 4; 100→nSigFigs 3; 1000→nSigFigs 2. Unsubscribe: `{ method: 'unsubscribe', subscription: { type: 'l2Book', coin } }`.
+
+## Processing
+
+- `processOrderbookData` in `lib/orderbook.ts`: raw L2 message → `ProcessedOrderbook` (bids/asks as `OrderbookLevel[]`, totals, percentages, spread, mid, best bid/ask). Keep parsing and numeric logic in this module; hooks only call it and write to cache.

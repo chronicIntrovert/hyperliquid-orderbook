@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #0d0d0d;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-tertiary: #262626;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #888888;
+  --color-text-muted: #555555;
+  --color-bid: #00c853;
+  --color-bid-bg: rgba(0, 200, 83, 0.15);
+  --color-bid-flash: rgba(0, 200, 83, 0.4);
+  --color-ask: #ff1744;
+  --color-ask-bg: rgba(255, 23, 68, 0.15);
+  --color-ask-flash: rgba(255, 23, 68, 0.4);
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --animate-flash: flash 300ms ease-out;
+}
+
+@keyframes flash {
+  0% { background-color: var(--color-bid-flash); }
+  100% { background-color: transparent; }
+}

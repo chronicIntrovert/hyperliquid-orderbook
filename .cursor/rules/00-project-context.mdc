@@ -1,0 +1,24 @@
+---
+description: Project context, PRD scope, and source of truth for the Hyperliquid orderbook widget
+alwaysApply: true
+---
+
+# Project Context
+
+This repo is the **Hyperliquid Orderbook Widget**: a real-time L2 orderbook UI for BTC/ETH via Hyperliquid's WebSocket API.
+
+- **Stack**: React 18+, Vite, TypeScript, TanStack Query v5, Tailwind CSS.
+- **Source of truth**: `docs/PRD.md` — requirements, scope, data models, UI spec, performance, and acceptance criteria.
+- **No backend**: Pure frontend; WebSocket to `wss://api.hyperliquid.xyz/ws`, subscription type `l2Book`.
+
+## Scope (MVP)
+
+**In**: Live orderbook (bids/asks), symbol (BTC/ETH) and precision (1, 2, 5, 10, 100, 1000) selectors, depth bars, change flash, spread, connection status, 15 rows per side, dark theme.
+
+**Out**: Trading, auth, trade history, charts, mobile-specific layouts, backend, WebGL.
+
+Before adding features or changing behavior, confirm alignment with the PRD (Sections 3, 17). If the PRD is ambiguous, clarify with the project owner before implementing.
+
+## API contract (PRD-bound)
+
+- **l2Book precision**: UI shows precision levels 1, 2, 5, 10, 100, 1000. Subscription uses **nSigFigs** (and **mantissa** where defined) per the mapping in `utils/constants.ts`: 1→nSigFigs 5; 2→nSigFigs 5, mantissa 2; 5→nSigFigs 5, mantissa 5; 10→nSigFigs 4; 100→nSigFigs 3; 1000→nSigFigs 2. Do not change this mapping without product/PRD alignment.

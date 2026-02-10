@@ -1,0 +1,26 @@
+---
+description: React and performance patterns for orderbook components
+globs: src/components/**/*
+alwaysApply: false
+---
+
+# React & Orderbook Performance
+
+## Minimize Re-renders (PRD Section 11)
+
+- **Row components**: Wrap with `memo()`. Only re-render when `level` (or props) actually change.
+- **Keys**: Use **price** (or stable level id), not array index. Example: `key={level.price}` so React can reconcile rows when levels shift.
+- **Derived data**: Memoize processing (e.g. `useMemo`) when transforming raw data into display structures.
+
+## Depth Bars & Flash
+
+- **Depth bar width**: From `level.percentage` (0–100). Use CSS `transition` (e.g. ~150ms) for smooth width changes; prefer GPU-friendly properties.
+- **Flash on change**: Trigger brief background highlight when `level.size` (or relevant field) changes. Use CSS animation (e.g. `animate-flash`) and clear after duration (~300ms); avoid long-running JS animations.
+
+## Styling
+
+- Use Tailwind and CSS variables from the PRD (e.g. `--bid-color`, `--ask-color`, `--flash-bid`, `--flash-ask`). Bids = green, asks = red; keep contrast and readability.
+
+## Types
+
+- Use TypeScript types from `src/types`. Props: explicit interfaces; use `FC` or explicit return type for components.

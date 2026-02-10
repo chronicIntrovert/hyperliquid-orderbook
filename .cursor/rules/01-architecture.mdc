@@ -1,0 +1,34 @@
+---
+description: Component hierarchy, data flow, and file layout for the orderbook widget
+globs: src/**/*
+alwaysApply: false
+---
+
+# Architecture
+
+## Component Hierarchy
+
+```
+App → QueryClientProvider → OrderbookWidget
+  → Header (SymbolSelector, PrecisionSelector)
+  → ConnectionStatus
+  → Orderbook → AsksTable, SpreadDisplay, BidsTable
+    → OrderbookSide → OrderbookRow (+ DepthBar)
+```
+
+## Data Flow
+
+- **useOrderbookSocket(coin, precisionLevel)**: Opens one WebSocket; subscribes to l2Book with params from `precisionLevelToSubscription(precisionLevel)` (nSigFigs + optional mantissa). Parses messages, writes to cache via `queryClient.setQueryData(queryKeys.orderbook(coin, precisionLevel), processed)` and `queryKeys.connection`. On coin/precision change: unsubscribe then subscribe on the same socket; new connection only on disconnect/reconnect.
+- **useOrderbook(coin, precisionLevel)**: `useQuery` with same key; components read from cache. No HTTP `queryFn`; WebSocket is source of truth.
+- **useConnection()**: Consumes `queryKeys.connection` for status.
+
+## File Layout (PRD Section 13)
+
+- `components/OrderbookWidget.tsx` — container; owns coin and precisionLevel state.
+- `components/Orderbook/` — Orderbook, OrderbookSide, OrderbookRow, DepthBar, SpreadDisplay.
+- `components/Controls/` — SymbolSelector, PrecisionSelector.
+- `hooks/useOrderbookSocket.ts`, `useOrderbook.ts`, `useConnection.ts`.
+- `lib/orderbook.ts` — `processOrderbookData`; `lib/queryClient.ts` — client config.
+- `types/index.ts` — all shared types and `queryKeys`. Add new types there.
+
+Keep new code in these modules; do not introduce parallel hierarchies or duplicate query key logic.

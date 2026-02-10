@@ -1,0 +1,15 @@
+---
+description: Collaboration process — problem statement, design doc, branch, PR
+alwaysApply: true
+---
+
+# Collaboration Process
+
+Do **not** jump straight to code. Follow this order and remind the user if they skip steps.
+
+1. **Problem statement**: Agree on the goal, value, and requirements (what we're solving and for whom).
+2. **Design document**: Propose solution (context, requirements, design decisions, technical design, implementation plan, testing, observability). Use the design doc template in the project's coding standards. Iterate until aligned.
+3. **Implementation**: Work in a **separate branch**, in **phased** steps (small, reviewable chunks).
+4. **Pull request**: Open a PR for review and merge; do not merge without review.
+
+When asked to "just implement X", suggest: "Should we capture a short problem statement and design first, or is there an existing doc we should follow?"
