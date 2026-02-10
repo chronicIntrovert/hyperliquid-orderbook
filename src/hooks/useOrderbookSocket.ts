@@ -67,6 +67,13 @@ export const useOrderbookSocket = (
 
         const c = coinRef.current
         const level = precisionLevelRef.current
+        const alreadySubscribed =
+          subscribedRef.current?.coin === c &&
+          subscribedRef.current?.precisionLevel === level
+        if (alreadySubscribed) {
+          return
+        }
+
         const params = precisionLevelToSubscription(level)
         ws.send(
           JSON.stringify({
@@ -161,12 +168,19 @@ export const useOrderbookSocket = (
   }, [queryClient])
 
   useEffect(() => {
-    queryClient.setQueryData(queryKeys.orderbook(coin, precisionLevel), null)
-
     const ws = wsRef.current
     if (ws?.readyState !== WebSocket.OPEN) {
       return
     }
+
+    const alreadySubscribed =
+      subscribedRef.current?.coin === coin &&
+      subscribedRef.current?.precisionLevel === precisionLevel
+    if (alreadySubscribed) {
+      return
+    }
+
+    queryClient.setQueryData(queryKeys.orderbook(coin, precisionLevel), null)
 
     const prev = subscribedRef.current
     if (prev) {

@@ -13,7 +13,7 @@ export const DepthBar: FC<DepthBarProps> = ({ percentage, side, children }) => {
   return (
     <div className="relative overflow-hidden">
       <div
-        className={`absolute inset-y-0 ${isBid ? 'right-0' : 'left-0'} ${colorClass}`}
+        className={`absolute inset-y-0 left-0 ${colorClass}`}
         style={{
           width: `${clamped}%`,
           transition: 'width 150ms ease-out',
