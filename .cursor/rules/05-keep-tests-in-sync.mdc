@@ -1,7 +1,7 @@
 ---
 description: When changing code, identify and update affected tests so they stay in sync
 globs: src/**/*
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Keep Tests Updated When Code Changes

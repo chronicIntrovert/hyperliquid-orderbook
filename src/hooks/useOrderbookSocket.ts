@@ -2,15 +2,17 @@ import { useEffect, useRef } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   DEFAULTS,
+  ORDERBOOK_THROTTLE_MS,
   RECONNECT,
   precisionLevelToSubscription,
 } from '../utils/constants'
-import { processOrderbookData } from '../lib/orderbook'
+import { addSizeChangeDirection, processOrderbookData } from '../lib/orderbook'
 import {
   queryKeys,
   type Coin,
-  type PrecisionLevel,
   type L2BookMessage,
+  type PrecisionLevel,
+  type ProcessedOrderbook,
 } from '../types'
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? 'wss://api.hyperliquid.xyz/ws'
@@ -31,12 +33,42 @@ export const useOrderbookSocket = (
   const coinRef = useRef(coin)
   const precisionLevelRef = useRef(precisionLevel)
   const subscribedRef = useRef<{ coin: Coin; precisionLevel: PrecisionLevel } | null>(null)
+  const pendingOrderbookRef = useRef<{
+    processed: ProcessedOrderbook
+    coin: Coin
+    precisionLevel: PrecisionLevel
+  } | null>(null)
+  const lastWrittenSizesRef = useRef<{
+    bids: Map<number, number>
+    asks: Map<number, number>
+  } | null>(null)
 
   coinRef.current = coin
   precisionLevelRef.current = precisionLevel
 
   useEffect(() => {
     let cancelled = false
+
+    const flushPending = (): void => {
+      if (cancelled) {
+        return
+      }
+      const pending = pendingOrderbookRef.current
+      if (pending === null) {
+        return
+      }
+      const { processed, coin: c, precisionLevel: level } = pending
+      const last = lastWrittenSizesRef.current
+      const toWrite = addSizeChangeDirection(processed, last)
+      queryClient.setQueryData(queryKeys.orderbook(c, level), toWrite)
+      pendingOrderbookRef.current = null
+      lastWrittenSizesRef.current = {
+        bids: new Map(processed.bids.map((l) => [l.price, l.size])),
+        asks: new Map(processed.asks.map((l) => [l.price, l.size])),
+      }
+    }
+
+    const intervalId = window.setInterval(flushPending, ORDERBOOK_THROTTLE_MS)
 
     const connect = () => {
       if (cancelled) {
@@ -102,7 +134,7 @@ export const useOrderbookSocket = (
 
           const processed = processOrderbookData(parsed)
           const level = precisionLevelRef.current
-          queryClient.setQueryData(queryKeys.orderbook(c, level), processed)
+          pendingOrderbookRef.current = { processed, coin: c, precisionLevel: level }
         } catch {
           // Non-fatal parse error: skip this message
         }
@@ -142,6 +174,7 @@ export const useOrderbookSocket = (
 
     return () => {
       cancelled = true
+      window.clearInterval(intervalId)
 
       const current = wsRef.current
       const sub = subscribedRef.current
@@ -180,6 +213,8 @@ export const useOrderbookSocket = (
       return
     }
 
+    pendingOrderbookRef.current = null
+    lastWrittenSizesRef.current = null
     queryClient.setQueryData(queryKeys.orderbook(coin, precisionLevel), null)
 
     const prev = subscribedRef.current

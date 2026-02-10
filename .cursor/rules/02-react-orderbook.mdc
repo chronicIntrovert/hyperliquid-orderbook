@@ -17,6 +17,11 @@ alwaysApply: false
 - **Depth bar width**: From `level.percentage` (0–100). Use CSS `transition` (e.g. ~150ms) for smooth width changes; prefer GPU-friendly properties.
 - **Flash on change**: Trigger brief background highlight when `level.size` (or relevant field) changes. Use CSS animation (e.g. `animate-flash`) and clear after duration (~300ms); avoid long-running JS animations.
 
+## Order & Depth Direction
+
+- **Price ordering**: Asks sorted ascending by price; bids sorted descending by price (toward the spread at the top for both sides).
+- **Depth accumulation**: Cumulative totals must increase away from the spread on each side. Do **not** sort bids by total size; compute percentages in display order so bid depth bars visually invert asks (bids grow opposite direction to asks).
+
 ## Styling
 
 - Use Tailwind and CSS variables from the PRD (e.g. `--bid-color`, `--ask-color`, `--flash-bid`, `--flash-ask`). Bids = green, asks = red; keep contrast and readability.

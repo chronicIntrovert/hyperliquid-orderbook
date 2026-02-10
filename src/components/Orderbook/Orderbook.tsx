@@ -17,6 +17,7 @@ interface OrderbookProps {
 }
 
 export const Orderbook: FC<OrderbookProps> = ({ coin, precisionLevel }) => {
+  console.log('Orderbook rendered')
   const { data } = useOrderbook(coin, precisionLevel)
   const priceDecimals = precisionLevelToPriceDecimals(precisionLevel)
 

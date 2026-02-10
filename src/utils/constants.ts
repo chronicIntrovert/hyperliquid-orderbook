@@ -57,3 +57,6 @@ export const ANIMATION = {
   depthTransitionMs: 150,
 }
 
+/** Throttle orderbook cache writes to limit re-renders when WS messages arrive at sub-ms rate. */
+export const ORDERBOOK_THROTTLE_MS = 1000
+

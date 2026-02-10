@@ -42,6 +42,8 @@ export interface OrderbookLevel {
   size: number
   total: number
   percentage: number
+  /** Set when size changed vs previous snapshot: 'increased' = add (green flash), 'decreased' = remove (red flash). Per In Silico: flash for adds or removes at a price row. */
+  sizeChangeDirection?: 'increased' | 'decreased'
 }
 
 export interface ProcessedOrderbook {

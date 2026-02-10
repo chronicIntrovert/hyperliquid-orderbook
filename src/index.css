@@ -18,6 +18,9 @@
 }
 
 @keyframes flash {
-  0% { background-color: var(--color-bid-flash); }
+  0% { background-color: var(--flash-color); }
   100% { background-color: transparent; }
 }
+
+.flash-bid { --flash-color: var(--color-bid-flash); }
+.flash-ask { --flash-color: var(--color-ask-flash); }
