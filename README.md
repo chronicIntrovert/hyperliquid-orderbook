@@ -10,7 +10,7 @@ cp .env.example .env   # optional; defaults to wss://api.hyperliquid.xyz/ws
 npm run dev
 ```
 
-Open http://localhost:5173. Use the Symbol and nSigFigs dropdowns; the book updates live over WebSocket.
+Open http://localhost:5173. Use the Symbol and Precision (1, 2, 5, 10, 100, 1000) dropdowns; the book updates live over WebSocket.
 
 ## Build
 
@@ -36,4 +36,14 @@ npm run preview   # serve dist/ at http://localhost:4173
 - `src/hooks/useOrderbookSocket.ts` – WebSocket lifecycle, writes to TanStack Query cache
 - `src/hooks/useOrderbook.ts` – reads orderbook from cache
 - `src/lib/orderbook.ts` – `processOrderbookData` (raw l2Book → processed bids/asks/spread)
-- `src/types/index.ts` – `Coin`, `NSigFigs`, `ProcessedOrderbook`, query keys
+- `src/types/index.ts` – `Coin`, `PrecisionLevel`, `ProcessedOrderbook`, query keys
+
+## Push to a new private remote
+
+1. Create a **private** repo on GitHub (or GitLab): do not add a README or .gitignore.
+2. Add the remote and push:
+   ```bash
+   git remote add origin https://github.com/YOUR_USER/hyperliquid-orderbook.git
+   git push -u origin main
+   ```
+3. To open a PR from a feature branch later: create the branch, push it, then use the GitHub “Compare & pull request” flow.
