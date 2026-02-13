@@ -21,7 +21,7 @@ npm run preview   # serve dist/ at http://localhost:4173
 
 ## Deploy to Cloudflare Pages (demo link)
 
-**Connect to Git (recommended):** In [Cloudflare Dashboard](https://dash.cloudflare.com) → Workers & Pages → Create → Pages → Connect to Git → select this repo. Set **Build command** to `npm run build`, **Build output directory** to `dist`, **Deploy command** to `npm run deploy:pages:upload`. Optionally add env **NODE_VERSION** = `20`. Save and Deploy; you get a URL like `https://<project>.pages.dev` and each push auto-deploys.
+**Connect to Git (recommended):** In [Cloudflare Dashboard](https://dash.cloudflare.com) → Workers & Pages → Create → Pages → Connect to Git → select this repo. Set **Build command** to `npm run build`, **Build output directory** to `dist`, **Deploy command** to `npx wrangler deploy` (the repo’s `wrangler.jsonc` points assets at `./dist`). Optionally add env **NODE_VERSION** = `20`. Save and Deploy; you get a URL like `https://<project>.pages.dev` and each push auto-deploys.
 
 **Direct upload:** After `npm run build`, run `npx wrangler pages login` then `npx wrangler pages deploy dist --project-name=hyperliquid-orderbook` (install Wrangler with `npm install -D wrangler` if needed). First time will prompt to create the Pages project.
 
