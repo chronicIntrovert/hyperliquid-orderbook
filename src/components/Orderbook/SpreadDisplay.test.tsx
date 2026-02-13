@@ -3,12 +3,12 @@ import { render, screen } from '@testing-library/react'
 import { SpreadDisplay } from './SpreadDisplay'
 
 describe('SpreadDisplay', () => {
-  it('shows waiting message when book is null', () => {
+  it('shows dash placeholder when book is null', () => {
     render(<SpreadDisplay book={null} />)
-    expect(screen.getByText('Waiting for book...')).toBeInTheDocument()
+    expect(screen.getByText('—')).toBeInTheDocument()
   })
 
-  it('shows waiting message when book has zero spread', () => {
+  it('shows dash placeholder when book has zero spread', () => {
     render(
       <SpreadDisplay
         book={{
@@ -23,7 +23,7 @@ describe('SpreadDisplay', () => {
         }}
       />,
     )
-    expect(screen.getByText('Waiting for book...')).toBeInTheDocument()
+    expect(screen.getByText('—')).toBeInTheDocument()
   })
 
   it('shows formatted spread when book has positive spread', () => {

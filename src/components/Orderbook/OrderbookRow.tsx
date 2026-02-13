@@ -1,8 +1,9 @@
 import type { FC } from 'react'
-import { memo, useEffect, useState } from 'react'
+import { memo } from 'react'
 import type { OrderbookLevel } from '../../types'
-import { DepthBar } from './DepthBar'
+import { useRowFlash } from '../../hooks/useRowFlash'
 import { formatPrice, formatSize } from '../../utils/format'
+import { DepthBar } from './DepthBar'
 
 interface OrderbookRowProps {
   level: OrderbookLevel
@@ -15,37 +16,20 @@ const OrderbookRowComponent: FC<OrderbookRowProps> = ({
   side,
   priceDecimals,
 }) => {
-  const [flash, setFlash] = useState(false)
+  const flashStyle = useRowFlash(level.sizeChangeDirection ?? undefined, side)
 
-  useEffect(() => {
-    const dir = level.sizeChangeDirection
-    if (dir !== 'increased' && dir !== 'decreased') {
-      return
-    }
-    setFlash(true)
-    const timeoutId = window.setTimeout(() => setFlash(false), 300)
-    return () => window.clearTimeout(timeoutId)
-  }, [level.sizeChangeDirection])
-
-  const priceClass =
-    side === 'bid' ? 'text-bid' : 'text-ask'
-  const flashClass =
-    side === 'bid' ? 'flash-bid' : 'flash-ask'
+  const priceClass = side === 'bid' ? 'text-bid' : 'text-ask'
 
   return (
-    <div
-      className={
-        flash ? `animate-flash ${flashClass}` : ''
-      }
-    >
+    <div style={flashStyle}>
       <DepthBar percentage={level.percentage} side={side}>
         <span className={priceClass}>
           {formatPrice(level.price, priceDecimals)}
         </span>
-        <span className="text-text-secondary">
+        <span className="text-secondary">
           {formatSize(level.size)}
         </span>
-        <span className="text-text-muted">
+        <span className="text-primary">
           {formatSize(level.total)}
         </span>
       </DepthBar>
@@ -54,4 +38,3 @@ const OrderbookRowComponent: FC<OrderbookRowProps> = ({
 }
 
 export const OrderbookRow = memo(OrderbookRowComponent)
-

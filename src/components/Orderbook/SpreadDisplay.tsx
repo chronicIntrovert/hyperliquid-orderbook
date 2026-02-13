@@ -9,17 +9,16 @@ interface SpreadDisplayProps {
 export const SpreadDisplay: FC<SpreadDisplayProps> = ({ book }) => {
   if (!book || book.spread <= 0) {
     return (
-      <div className="border-y border-bg-tertiary px-2 py-1 text-center text-xs text-text-muted">
-        Waiting for book...
+      <div className="border-y border-elevated px-2 py-1 text-center text-xs text-muted">
+        &mdash;
       </div>
     )
   }
 
   return (
-    <div className="border-y border-bg-tertiary px-2 py-1 text-center text-xs text-text-secondary">
-      <span className="mr-2 text-text-muted">Spread</span>
+    <div className="border-y border-elevated px-2 py-1 text-center text-xs text-secondary">
+      <span className="mr-2 text-muted">Spread</span>
       <span>{formatSpread(book.spread, book.spreadPercentage)}</span>
     </div>
   )
 }
-

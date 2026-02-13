@@ -1,26 +1,39 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #0d0d0d;
-  --color-bg-secondary: #1a1a1a;
-  --color-bg-tertiary: #262626;
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #888888;
-  --color-text-muted: #555555;
-  --color-bid: #00c853;
-  --color-bid-bg: rgba(0, 200, 83, 0.15);
-  --color-bid-flash: rgba(0, 200, 83, 0.4);
-  --color-ask: #ff1744;
-  --color-ask-bg: rgba(255, 23, 68, 0.15);
-  --color-ask-flash: rgba(255, 23, 68, 0.4);
+  --color-page: #0d0d0d;
+  --color-panel: #1a1a1a;
+  --color-elevated: #262626;
+  --color-primary: #ffffff;
+  --color-secondary: #888888;
+  --color-muted: #555555;
+  --color-bid: #0ecb81;
+  --color-bid-bg: rgba(14, 203, 129, 0.12);
+  --color-bid-flash: rgba(14, 203, 129, 0.22);
+  --color-ask: #f6465d;
+  --color-ask-bg: rgba(246, 70, 93, 0.12);
+  --color-ask-flash: rgba(246, 70, 93, 0.22);
   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --animate-flash: flash 300ms ease-out;
 }
 
-@keyframes flash {
-  0% { background-color: var(--flash-color); }
-  100% { background-color: transparent; }
+/* Thin dark-themed scrollbar for Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
-.flash-bid { --flash-color: var(--color-bid-flash); }
-.flash-ask { --flash-color: var(--color-ask-flash); }
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}

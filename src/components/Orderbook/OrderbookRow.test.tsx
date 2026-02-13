@@ -23,7 +23,7 @@ describe('OrderbookRow', () => {
     expect(sizeAndTotal).toHaveLength(2)
   })
 
-  it('applies flash class when sizeChangeDirection is increased and effect runs', async () => {
+  it('applies bid (green) flash when sizeChangeDirection is set and side is bid', () => {
     vi.useFakeTimers()
     const { container } = render(
       <OrderbookRow
@@ -34,12 +34,11 @@ describe('OrderbookRow', () => {
     )
     vi.advanceTimersByTime(0)
     const wrapper = container.firstChild as HTMLElement
-    expect(wrapper.className).toContain('animate-flash')
-    expect(wrapper.className).toContain('flash-bid')
+    expect(wrapper.style.backgroundColor).toBe('rgba(14, 203, 129, 0.22)')
     vi.useRealTimers()
   })
 
-  it('applies flash-ask when side is ask and sizeChangeDirection is set', async () => {
+  it('applies ask (red) flash when sizeChangeDirection is set and side is ask', () => {
     vi.useFakeTimers()
     const { container } = render(
       <OrderbookRow
@@ -50,11 +49,38 @@ describe('OrderbookRow', () => {
     )
     vi.advanceTimersByTime(0)
     const wrapper = container.firstChild as HTMLElement
-    expect(wrapper.className).toContain('flash-ask')
+    expect(wrapper.style.backgroundColor).toBe('rgba(246, 70, 93, 0.22)')
     vi.useRealTimers()
   })
 
-  it('does not apply flash class when sizeChangeDirection is undefined', () => {
+  it('applies same side color for both increased and decreased (bid green, ask red)', () => {
+    vi.useFakeTimers()
+    const { container: c1 } = render(
+      <OrderbookRow
+        level={{ ...baseLevel, sizeChangeDirection: 'decreased' }}
+        side="bid"
+        priceDecimals={2}
+      />,
+    )
+    vi.advanceTimersByTime(0)
+    expect((c1.firstChild as HTMLElement).style.backgroundColor).toBe(
+      'rgba(14, 203, 129, 0.22)',
+    )
+    const { container: c2 } = render(
+      <OrderbookRow
+        level={{ ...baseLevel, sizeChangeDirection: 'increased' }}
+        side="ask"
+        priceDecimals={2}
+      />,
+    )
+    vi.advanceTimersByTime(0)
+    expect((c2.firstChild as HTMLElement).style.backgroundColor).toBe(
+      'rgba(246, 70, 93, 0.22)',
+    )
+    vi.useRealTimers()
+  })
+
+  it('has transparent background when sizeChangeDirection is undefined', () => {
     const { container } = render(
       <OrderbookRow
         level={baseLevel}
@@ -63,6 +89,6 @@ describe('OrderbookRow', () => {
       />,
     )
     const wrapper = container.firstChild as HTMLElement
-    expect(wrapper.className).not.toContain('animate-flash')
+    expect(wrapper.style.backgroundColor).toBe('transparent')
   })
 })

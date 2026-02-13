@@ -1,16 +1,14 @@
-export type Coin = 'BTC' | 'ETH'
-
-/** Precision options shown in the UI (dropdown). Maps to nSigFigs + optional mantissa. */
-export type PrecisionLevel = 1 | 2 | 5 | 10 | 100 | 1000
+/**
+ * Canonical type exports for the app. Prefer importing from here so types
+ * stay consistent across components, hooks, and lib.
+ *
+ * Coin and PrecisionTier are derived from config (utils/constants.ts COINS and TIER_INDICES).
+ */
+import type { Coin, PrecisionTier } from '../utils/constants'
+export type { Coin, PrecisionTier }
 
 export interface L2BookSubscriptionPayload {
   type: 'l2Book'
-  coin: Coin
-  nSigFigs: number
-  mantissa?: number
-}
-
-export interface WebSocketConfig {
   coin: Coin
   nSigFigs: number
   mantissa?: number
@@ -39,10 +37,16 @@ export interface L2BookMessage {
 
 export interface OrderbookLevel {
   price: number
+  /** Size at this price level, in base asset (coin: BTC or ETH). */
   size: number
+  /** Cumulative size from best price outward in display order, in base asset (coin). */
   total: number
   percentage: number
-  /** Set when size changed vs previous snapshot: 'increased' = add (green flash), 'decreased' = remove (red flash). Per In Silico: flash for adds or removes at a price row. */
+  /**
+   * Set when size changed vs previous snapshot:
+   * - 'increased': size went up or new level appeared → green flash
+   * - 'decreased': size went down or level disappeared (ghost row, size 0) → red flash
+   */
   sizeChangeDirection?: 'increased' | 'decreased'
 }
 
@@ -55,11 +59,5 @@ export interface ProcessedOrderbook {
   bestBid: number
   bestAsk: number
   timestamp: number
-}
-
-export const queryKeys = {
-  orderbook: (coin: Coin, precisionLevel: PrecisionLevel) =>
-    ['orderbook', coin, precisionLevel] as const,
-  connection: ['connection'] as const,
 }
 

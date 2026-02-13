@@ -1,0 +1,133 @@
+import type { FC } from 'react'
+import { useEffect, useState } from 'react'
+import { Drawer } from 'vaul'
+
+function useIsMobile(): boolean {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const m = window.matchMedia('(max-width: 767px)')
+    setIsMobile(m.matches)
+    const listener = (): void => setIsMobile(m.matches)
+    m.addEventListener('change', listener)
+    return () => m.removeEventListener('change', listener)
+  }, [])
+  return isMobile
+}
+
+/** Button that toggles the legend. Highlights (ring) only when open. */
+export const InfoButton: FC<{
+  open: boolean
+  onToggle: () => void
+}> = ({ open, onToggle }) => (
+  <button
+    type="button"
+    onClick={onToggle}
+    aria-label="Orderbook legend"
+    aria-expanded={open}
+    className={`flex h-5 w-5 items-center justify-center rounded-full border transition-colors hover:border-secondary hover:text-secondary focus:outline-none focus:ring-0 ${
+      open
+        ? 'border-secondary text-secondary ring-2 ring-secondary/50 ring-offset-2 ring-offset-panel'
+        : 'border-elevated text-muted'
+    }`}
+  >
+    <svg
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      className="h-3.5 w-3.5"
+      aria-hidden="true"
+    >
+      <path
+        fillRule="evenodd"
+        d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  </button>
+)
+
+const DRAWER_CONTENT_CLASS =
+  'flex flex-1 flex-col min-h-0 rounded-t-xl border-bg-tertiary bg-bg-secondary shadow-xl outline-none'
+
+/** Scrollable area for legend content; must be in a flex container with min-h-0 so it can shrink and scroll. */
+const LegendScrollArea: FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = '',
+}) => (
+  <div
+    className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 text-sm leading-relaxed text-secondary sm:text-xs ${className}`}
+    role="region"
+    aria-label="Legend content"
+  >
+    {children}
+  </div>
+)
+
+import { InfoTooltipContent } from './InfoTooltipContent'
+
+/**
+ * Legend panel: Vaul drawer only.
+ * - Desktop: side drawer from the left (direction="left").
+ * - Mobile: bottom drawer, full-height snap so content is scrollable inside.
+ */
+export const InfoLegend: FC<{
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}> = ({ open, onOpenChange }) => {
+  const isMobile = useIsMobile()
+
+  const drawerContent = (
+    <Drawer.Portal>
+      <Drawer.Overlay className="fixed inset-0 z-50 bg-black/25 backdrop-blur-[2px]" />
+      <Drawer.Content
+        className={`fixed z-50 flex flex-col outline-none ${
+          isMobile
+            ? 'bottom-0 left-0 right-0 max-h-[100dvh] rounded-t-xl border border-b border-bg-tertiary bg-bg-secondary/95 backdrop-blur-sm'
+            : 'left-0 top-0 h-full w-[min(20rem,100vw-2rem)] max-w-full border-r border-bg-tertiary bg-bg-secondary'
+        } ${DRAWER_CONTENT_CLASS}`}
+      >
+        {isMobile && (
+          <Drawer.Handle className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-elevated" />
+        )}
+        <Drawer.Title className="sr-only">Orderbook Legend</Drawer.Title>
+            <Drawer.Description className="sr-only">
+              Legend for orderbook columns, depth bars, row flashes, and spread.
+            </Drawer.Description>
+            <LegendScrollArea>
+          <InfoTooltipContent />
+        </LegendScrollArea>
+      </Drawer.Content>
+    </Drawer.Portal>
+  )
+
+  const rootProps = {
+    open,
+    onOpenChange,
+    modal: true as const,
+    dismissible: true,
+    noBodyStyles: true,
+    setBackgroundColorOnScale: false as const,
+  }
+
+  return (
+    <>
+      <div className="flex">
+        <InfoButton open={open} onToggle={() => onOpenChange(!open)} />
+      </div>
+
+      {isMobile ? (
+        <Drawer.Root
+          {...rootProps}
+          direction="bottom"
+          snapPoints={[1]}
+          fadeFromIndex={0}
+        >
+          {drawerContent}
+        </Drawer.Root>
+      ) : (
+        <Drawer.Root {...rootProps} direction="left">
+          {drawerContent}
+        </Drawer.Root>
+      )}
+    </>
+  )
+}

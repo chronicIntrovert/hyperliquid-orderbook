@@ -1,7 +1,10 @@
+const MAX_PRICE_DECIMALS = 2
+
+/** Formats price with at most two decimal places (tier decimals are capped). */
 export const formatPrice = (value: number, decimals: number): string =>
   value.toLocaleString(undefined, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
+    minimumFractionDigits: Math.min(decimals, MAX_PRICE_DECIMALS),
+    maximumFractionDigits: MAX_PRICE_DECIMALS,
   })
 
 export const formatSize = (value: number): string =>

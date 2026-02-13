@@ -1,68 +1,85 @@
 import type { FC } from 'react'
 import { useOrderbook } from '../../hooks/useOrderbook'
-import {
-  DEFAULTS,
-  precisionLevelToPriceDecimals,
-} from '../../utils/constants'
-import type { Coin, PrecisionLevel } from '../../types'
+import { useMinimumLoadingTime } from '../../hooks/useMinimumLoadingTime'
+import { ANIMATION, DEFAULTS, tierToPriceDecimals } from '../../utils/constants'
+import type { Coin, PrecisionTier } from '../../types'
 import { OrderbookSide } from './OrderbookSide'
 import { SpreadDisplay } from './SpreadDisplay'
+import { LoadingOverlay } from './LoadingOverlay'
+import { OrderbookMobileRow } from './OrderbookMobileRow'
 
-const TABLE_HEADER_CLASS =
-  'grid grid-cols-3 border-b border-bg-tertiary px-2 py-1 text-xs text-text-secondary'
+const DESKTOP_HEADER_CLASS =
+  'grid grid-cols-3 border-b border-elevated px-2 py-1 text-xs text-secondary'
+
+const MOBILE_HEADER_CLASS =
+  'grid grid-cols-4 border-b border-elevated px-2 py-1 text-xs text-secondary'
 
 interface OrderbookProps {
   coin: Coin
-  precisionLevel: PrecisionLevel
+  tier: PrecisionTier
 }
 
-export const Orderbook: FC<OrderbookProps> = ({ coin, precisionLevel }) => {
-  console.log('Orderbook rendered')
-  const { data } = useOrderbook(coin, precisionLevel)
-  const priceDecimals = precisionLevelToPriceDecimals(precisionLevel)
+export const Orderbook: FC<OrderbookProps> = ({ coin, tier }) => {
+  const { data } = useOrderbook(coin, tier)
+  const priceDecimals = tierToPriceDecimals(tier, coin)
+
+  const shimmerDone = useMinimumLoadingTime(ANIMATION.shimmerDurationMs)
+  const showData = data != null && shimmerDone
+
+  const bidLevels = showData ? data.bids.slice(0, DEFAULTS.rowsPerSide) : []
+  const askLevels = showData
+    ? data.asks.slice(0, DEFAULTS.rowsPerSide)
+    : []
 
   return (
-    <div className="flex flex-col overflow-hidden rounded border border-bg-tertiary bg-bg-secondary">
-      <div className={`${TABLE_HEADER_CLASS} hidden md:grid`}>
-        <span>Price</span>
-        <span className="text-right">Size</span>
-        <span className="text-right">Total</span>
+    <div className="relative flex flex-col overflow-hidden rounded border border-elevated bg-panel">
+      {/* Mobile: 4-column layout (Total | Price | Price | Total), no Size, no spread row */}
+      <div className="flex flex-col md:hidden">
+        <div className={MOBILE_HEADER_CLASS}>
+          <span>Total ({coin})</span>
+          <span>Price</span>
+          <span>Price</span>
+          <span className="text-right">Total ({coin})</span>
+        </div>
+        <div className="flex flex-col">
+          {Array.from({ length: DEFAULTS.rowsPerSide }, (_, i) => (
+            <OrderbookMobileRow
+              key={i}
+              bidLevel={bidLevels[i] ?? null}
+              askLevel={askLevels[i] ?? null}
+              priceDecimals={priceDecimals}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="flex flex-1 flex-wrap md:flex-nowrap md:flex-col">
-        <div className="w-full flex-shrink-0 md:order-2">
-          <SpreadDisplay book={data ?? null} />
+      {/* Desktop: single-column asks → spread → bids */}
+      <div className="hidden flex-col md:flex">
+        <div className={DESKTOP_HEADER_CLASS}>
+          <span>Price</span>
+          <span className="text-right">Size ({coin})</span>
+          <span className="text-right">Total ({coin})</span>
         </div>
-
-        <div className="flex min-w-0 flex-1 flex-col md:order-3">
-          <div className={`${TABLE_HEADER_CLASS} md:hidden`}>
-            <span>Price</span>
-            <span className="text-right">Size</span>
-            <span className="text-right">Total</span>
-          </div>
+        <div className="flex flex-col">
           <OrderbookSide
-            levels={data?.bids ?? []}
+            levels={showData ? data.asks : []}
+            side="ask"
+            priceDecimals={priceDecimals}
+            rows={DEFAULTS.rowsPerSide}
+          />
+
+          <SpreadDisplay book={showData ? data : null} />
+
+          <OrderbookSide
+            levels={showData ? data.bids : []}
             side="bid"
             priceDecimals={priceDecimals}
             rows={DEFAULTS.rowsPerSide}
           />
         </div>
-
-        <div className="flex min-w-0 flex-1 flex-col border-l border-bg-tertiary md:order-1 md:border-l-0">
-          <div className={`${TABLE_HEADER_CLASS} md:hidden`}>
-            <span>Price</span>
-            <span className="text-right">Size</span>
-            <span className="text-right">Total</span>
-          </div>
-          <OrderbookSide
-            levels={data?.asks ?? []}
-            side="ask"
-            priceDecimals={priceDecimals}
-            rows={DEFAULTS.rowsPerSide}
-          />
-        </div>
       </div>
+
+      {!showData && <LoadingOverlay />}
     </div>
   )
 }
-

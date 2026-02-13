@@ -346,14 +346,14 @@ const queryKeys = {
   --text-secondary: #888888;
   --text-muted: #555555;
   
-  --bid-color: #00c853;           /* green for buys */
-  --bid-bg: rgba(0, 200, 83, 0.15);
+  --bid-color: #0ecb81;           /* green for bids (Hyperliquid-style) */
+  --bid-bg: rgba(14, 203, 129, 0.12);
   
-  --ask-color: #ff1744;           /* red for sells */
-  --ask-bg: rgba(255, 23, 68, 0.15);
+  --ask-color: #f6465d;           /* red for asks */
+  --ask-bg: rgba(246, 70, 93, 0.12);
   
-  --flash-bid: rgba(0, 200, 83, 0.4);
-  --flash-ask: rgba(255, 23, 68, 0.4);
+  --flash-bid: rgba(14, 203, 129, 0.22);  /* bid rows flash green on any change */
+  --flash-ask: rgba(246, 70, 93, 0.22);   /* ask rows flash red on any change */
 }
 ```
 

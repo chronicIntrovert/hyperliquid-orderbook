@@ -4,25 +4,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: {
-          primary: '#0d0d0d',
-          secondary: '#1a1a1a',
-          tertiary: '#262626',
-        },
-        text: {
-          primary: '#ffffff',
-          secondary: '#888888',
-          muted: '#555555',
-        },
+        page: '#0d0d0d',
+        panel: '#1a1a1a',
+        elevated: '#262626',
+        primary: '#ffffff',
+        secondary: '#888888',
+        muted: '#555555',
         bid: {
-          DEFAULT: '#00c853',
-          bg: 'rgba(0, 200, 83, 0.15)',
-          flash: 'rgba(0, 200, 83, 0.4)',
+          DEFAULT: '#0ecb81',
+          bg: 'rgba(14, 203, 129, 0.12)',
+          flash: 'rgba(14, 203, 129, 0.22)',
         },
         ask: {
-          DEFAULT: '#ff1744',
-          bg: 'rgba(255, 23, 68, 0.15)',
-          flash: 'rgba(255, 23, 68, 0.4)',
+          DEFAULT: '#f6465d',
+          bg: 'rgba(246, 70, 93, 0.12)',
+          flash: 'rgba(246, 70, 93, 0.22)',
         },
       },
       fontFamily: {

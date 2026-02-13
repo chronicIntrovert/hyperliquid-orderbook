@@ -2,8 +2,8 @@ import React from 'react'
 import { describe, expect, it } from 'vitest'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
+import { queryKeys } from '../lib/queryKeys'
 import type { ProcessedOrderbook } from '../types'
-import { queryKeys } from '../types'
 import { useOrderbook } from './useOrderbook'
 
 function createWrapper() {
@@ -24,7 +24,7 @@ function createWrapper() {
 describe('useOrderbook', () => {
   it('returns null when cache has no data', async () => {
     const { result } = renderHook(
-      () => useOrderbook('BTC', 1),
+      () => useOrderbook('BTC', 0),
       { wrapper: createWrapper() },
     )
     await waitFor(() => {
@@ -33,7 +33,7 @@ describe('useOrderbook', () => {
     expect(result.current.data).toBeNull()
   })
 
-  it('returns cached orderbook when set for the same coin and precision', async () => {
+  it('returns cached orderbook when set for the same coin and tier', async () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
     })
@@ -47,7 +47,7 @@ describe('useOrderbook', () => {
       bestAsk: 101,
       timestamp: 0,
     }
-    queryClient.setQueryData(queryKeys.orderbook('BTC', 1), book)
+    queryClient.setQueryData(queryKeys.orderbook('BTC', 0), book)
 
     function Wrapper({ children }: { children: React.ReactNode }) {
       return (
@@ -57,7 +57,7 @@ describe('useOrderbook', () => {
       )
     }
 
-    const { result } = renderHook(() => useOrderbook('BTC', 1), {
+    const { result } = renderHook(() => useOrderbook('BTC', 0), {
       wrapper: Wrapper,
     })
 
