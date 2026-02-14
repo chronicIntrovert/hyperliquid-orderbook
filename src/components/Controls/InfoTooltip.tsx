@@ -14,9 +14,7 @@ function useIsMobile(): boolean {
   return isMobile
 }
 
-const MOBILE_ICON_SIZE = 'h-5 w-5'
 const DESKTOP_BUTTON_SIZE = 'h-5 w-5'
-const DESKTOP_ICON_SIZE = 'h-3.5 w-3.5'
 
 /** Button that toggles the legend. On mobile: larger tap target and icon. Highlights (ring) only when open. */
 export const InfoButton: FC<{
@@ -29,18 +27,15 @@ export const InfoButton: FC<{
     onClick={onToggle}
     aria-label="Orderbook legend"
     aria-expanded={open}
-    className={`flex items-center justify-center rounded-full border transition-colors hover:border-secondary hover:text-secondary focus:outline-none focus:ring-0 ${
-      isMobile ? 'min-h-[44px] min-w-[44px]' : DESKTOP_BUTTON_SIZE
-    } ${
-      open
+    className={`flex items-center justify-center rounded-full border transition-colors hover:border-secondary hover:text-secondary focus:outline-none focus:ring-0 ${isMobile ? 'min-h-[24px] min-w-[24px]' : DESKTOP_BUTTON_SIZE
+      } ${open
         ? 'border-secondary text-secondary ring-2 ring-secondary/50 ring-offset-2 ring-offset-panel'
         : 'border-elevated text-muted'
-    }`}
+      }`}
   >
     <svg
       viewBox="0 0 20 20"
       fill="currentColor"
-      className={isMobile ? MOBILE_ICON_SIZE : DESKTOP_ICON_SIZE}
       aria-hidden="true"
     >
       <path
@@ -87,20 +82,17 @@ export const InfoLegend: FC<{
     <Drawer.Portal>
       <Drawer.Overlay className="fixed inset-0 z-50 bg-black/25 backdrop-blur-[2px]" />
       <Drawer.Content
-        className={`fixed z-50 flex flex-col outline-none ${
-          isMobile
+        className={`fixed z-50 flex flex-col outline-none ${isMobile
             ? 'bottom-0 left-0 right-0 max-h-[66dvh] rounded-t-xl border border-b border-bg-tertiary bg-bg-secondary/95 backdrop-blur-sm'
             : 'left-0 top-0 h-full w-[min(20rem,100vw-2rem)] max-w-full border-r border-bg-tertiary bg-bg-secondary'
-        } ${DRAWER_CONTENT_CLASS}`}
+          } ${DRAWER_CONTENT_CLASS}`}
       >
-        {isMobile && (
-          <Drawer.Handle className="mx-auto mt-3 h-1.5 w-14 shrink-0 rounded-full bg-elevated touch-manipulation" aria-label="Drag to close" />
-        )}
+        <Drawer.Handle className="mt-4" />
         <Drawer.Title className="sr-only">Orderbook Legend</Drawer.Title>
-            <Drawer.Description className="sr-only">
-              Legend for orderbook columns, depth bars, row flashes, and spread.
-            </Drawer.Description>
-            <LegendScrollArea>
+        <Drawer.Description className="sr-only">
+          Legend for orderbook columns, depth bars, row flashes, and spread.
+        </Drawer.Description>
+        <LegendScrollArea>
           <InfoTooltipContent />
         </LegendScrollArea>
       </Drawer.Content>
@@ -126,8 +118,12 @@ export const InfoLegend: FC<{
         <Drawer.Root
           {...rootProps}
           direction="bottom"
-          snapPoints={[2 / 3]}
-          fadeFromIndex={0}
+          snapPoints={[0, 2 / 3]}
+          activeSnapPoint={open ? 2 / 3 : 0}
+          setActiveSnapPoint={(point) => {
+            if (point === 0) onOpenChange(false)
+          }}
+          fadeFromIndex={1}
         >
           {drawerContent}
         </Drawer.Root>
