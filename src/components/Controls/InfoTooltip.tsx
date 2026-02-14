@@ -87,7 +87,7 @@ export const InfoLegend: FC<{
             : 'left-0 top-0 h-full w-[min(20rem,100vw-2rem)] max-w-full border-r border-bg-tertiary bg-bg-secondary'
           } ${DRAWER_CONTENT_CLASS}`}
       >
-        <Drawer.Handle className="mt-4" />
+        <Drawer.Handle className="my-4" />
         <Drawer.Title className="sr-only">Orderbook Legend</Drawer.Title>
         <Drawer.Description className="sr-only">
           Legend for orderbook columns, depth bars, row flashes, and spread.
@@ -118,8 +118,8 @@ export const InfoLegend: FC<{
         <Drawer.Root
           {...rootProps}
           direction="bottom"
-          snapPoints={[0, 2 / 3]}
-          activeSnapPoint={open ? 2 / 3 : 0}
+          snapPoints={[0, 1]}
+          activeSnapPoint={open ? 1 : 0}
           setActiveSnapPoint={(point) => {
             if (point === 0) onOpenChange(false)
           }}
