@@ -1,34 +1,33 @@
 /**
  * Single source of truth for supported coins. Adding a coin = add one entry here;
- * SymbolSelector, tier labels, and price decimals all derive from this config.
+ * SymbolSelector and tier labels derive from this config.
  *
- * Tier API params (nSigFigs/mantissa) are coin-agnostic and shared across coins;
- * display (label, priceDecimals) is per-coin because the same significant-figures
- * produce different dollar tick sizes at different price magnitudes.
+ * Tier API params (nSigFigs/mantissa) are coin-agnostic; display label per tier
+ * is per-coin (same significant-figures → different dollar tick sizes by price level).
  */
 export const COINS = [
   {
     id: 'BTC',
     label: 'BTC',
     tiers: [
-      { label: '1', priceDecimals: 4 },
-      { label: '2', priceDecimals: 3 },
-      { label: '5', priceDecimals: 3 },
-      { label: '10', priceDecimals: 2 },
-      { label: '100', priceDecimals: 1 },
-      { label: '1000', priceDecimals: 0 },
+      { label: '1' },
+      { label: '2' },
+      { label: '5' },
+      { label: '10' },
+      { label: '100' },
+      { label: '1000' },
     ],
   },
   {
     id: 'ETH',
     label: 'ETH',
     tiers: [
-      { label: '0.1', priceDecimals: 4 },
-      { label: '0.2', priceDecimals: 3 },
-      { label: '0.5', priceDecimals: 3 },
-      { label: '1', priceDecimals: 2 },
-      { label: '10', priceDecimals: 1 },
-      { label: '100', priceDecimals: 0 },
+      { label: '0.1' },
+      { label: '0.2' },
+      { label: '0.5' },
+      { label: '1' },
+      { label: '10' },
+      { label: '100' },
     ],
   },
 ] as const
@@ -88,12 +87,6 @@ export const tierToSubscription = (
   }
   return result
 }
-
-/** Price decimal places for display (depends on coin and tier). */
-export const tierToPriceDecimals = (
-  tier: PrecisionTier,
-  coin: Coin,
-): number => getCoin(coin).tiers[tier].priceDecimals
 
 /** Display label for a tier (depends on coin). */
 export const tierToLabel = (tier: PrecisionTier, coin: Coin): string =>

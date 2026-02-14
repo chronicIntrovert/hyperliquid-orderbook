@@ -19,11 +19,7 @@ const askLevel = {
 describe('OrderbookMobileRow', () => {
   it('renders bid and ask price and total when both levels provided', () => {
     render(
-      <OrderbookMobileRow
-        bidLevel={bidLevel}
-        askLevel={askLevel}
-        priceDecimals={2}
-      />,
+      <OrderbookMobileRow bidLevel={bidLevel} askLevel={askLevel} />,
     )
     expect(screen.getByText('95,000.00')).toBeInTheDocument()
     expect(screen.getByText('95,100.00')).toBeInTheDocument()
@@ -33,11 +29,10 @@ describe('OrderbookMobileRow', () => {
 
   it('applies bid (green) flash when bid level has sizeChangeDirection', () => {
     vi.useFakeTimers()
-    const { container } = render(
+    const { container } =     render(
       <OrderbookMobileRow
         bidLevel={{ ...bidLevel, sizeChangeDirection: 'increased' }}
         askLevel={askLevel}
-        priceDecimals={2}
       />,
     )
     vi.advanceTimersByTime(0)
@@ -48,11 +43,10 @@ describe('OrderbookMobileRow', () => {
 
   it('applies ask (red) flash when ask level has sizeChangeDirection', () => {
     vi.useFakeTimers()
-    const { container } = render(
+    const { container } =     render(
       <OrderbookMobileRow
         bidLevel={bidLevel}
         askLevel={{ ...askLevel, sizeChangeDirection: 'decreased' }}
-        priceDecimals={2}
       />,
     )
     vi.advanceTimersByTime(0)
@@ -63,12 +57,8 @@ describe('OrderbookMobileRow', () => {
   })
 
   it('renders empty cells when levels are null', () => {
-    const { container } = render(
-      <OrderbookMobileRow
-        bidLevel={null}
-        askLevel={null}
-        priceDecimals={2}
-      />,
+    const { container } =     render(
+      <OrderbookMobileRow bidLevel={null} askLevel={null} />,
     )
     expect(container.textContent).toContain('\u00A0')
   })

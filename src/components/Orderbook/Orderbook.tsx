@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import { useOrderbook } from '../../hooks/useOrderbook'
 import { useMinimumLoadingTime } from '../../hooks/useMinimumLoadingTime'
-import { ANIMATION, DEFAULTS, tierToPriceDecimals } from '../../utils/constants'
+import { ANIMATION, DEFAULTS } from '../../utils/constants'
 import type { Coin, PrecisionTier } from '../../types'
 import { OrderbookSide } from './OrderbookSide'
 import { SpreadDisplay } from './SpreadDisplay'
@@ -21,7 +21,6 @@ interface OrderbookProps {
 
 export const Orderbook: FC<OrderbookProps> = ({ coin, tier }) => {
   const { data } = useOrderbook(coin, tier)
-  const priceDecimals = tierToPriceDecimals(tier, coin)
 
   const shimmerDone = useMinimumLoadingTime(ANIMATION.shimmerDurationMs)
   const showData = data != null && shimmerDone
@@ -47,7 +46,6 @@ export const Orderbook: FC<OrderbookProps> = ({ coin, tier }) => {
               key={i}
               bidLevel={bidLevels[i] ?? null}
               askLevel={askLevels[i] ?? null}
-              priceDecimals={priceDecimals}
             />
           ))}
         </div>
@@ -64,7 +62,6 @@ export const Orderbook: FC<OrderbookProps> = ({ coin, tier }) => {
           <OrderbookSide
             levels={showData ? data.asks : []}
             side="ask"
-            priceDecimals={priceDecimals}
             rows={DEFAULTS.rowsPerSide}
           />
 
@@ -73,7 +70,6 @@ export const Orderbook: FC<OrderbookProps> = ({ coin, tier }) => {
           <OrderbookSide
             levels={showData ? data.bids : []}
             side="bid"
-            priceDecimals={priceDecimals}
             rows={DEFAULTS.rowsPerSide}
           />
         </div>

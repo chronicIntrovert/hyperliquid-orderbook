@@ -8,14 +8,9 @@ import { DepthBar } from './DepthBar'
 interface OrderbookRowProps {
   level: OrderbookLevel
   side: 'bid' | 'ask'
-  priceDecimals: number
 }
 
-const OrderbookRowComponent: FC<OrderbookRowProps> = ({
-  level,
-  side,
-  priceDecimals,
-}) => {
+const OrderbookRowComponent: FC<OrderbookRowProps> = ({ level, side }) => {
   const flashStyle = useRowFlash(level.sizeChangeDirection ?? undefined, side)
 
   const priceClass = side === 'bid' ? 'text-bid' : 'text-ask'
@@ -24,7 +19,7 @@ const OrderbookRowComponent: FC<OrderbookRowProps> = ({
     <div style={flashStyle}>
       <DepthBar percentage={level.percentage} side={side}>
         <span className={priceClass}>
-          {formatPrice(level.price, priceDecimals)}
+          {formatPrice(level.price)}
         </span>
         <span className="text-secondary">
           {formatSize(level.size)}

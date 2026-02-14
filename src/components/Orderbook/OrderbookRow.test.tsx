@@ -12,11 +12,7 @@ const baseLevel = {
 describe('OrderbookRow', () => {
   it('renders price, size, and total with correct formatting', () => {
     render(
-      <OrderbookRow
-        level={baseLevel}
-        side="bid"
-        priceDecimals={2}
-      />,
+      <OrderbookRow level={baseLevel} side="bid" />,
     )
     expect(screen.getByText('95,000.00')).toBeInTheDocument()
     const sizeAndTotal = screen.getAllByText('1.000')
@@ -29,7 +25,6 @@ describe('OrderbookRow', () => {
       <OrderbookRow
         level={{ ...baseLevel, sizeChangeDirection: 'increased' }}
         side="bid"
-        priceDecimals={2}
       />,
     )
     vi.advanceTimersByTime(0)
@@ -44,7 +39,6 @@ describe('OrderbookRow', () => {
       <OrderbookRow
         level={{ ...baseLevel, sizeChangeDirection: 'decreased' }}
         side="ask"
-        priceDecimals={2}
       />,
     )
     vi.advanceTimersByTime(0)
@@ -59,7 +53,6 @@ describe('OrderbookRow', () => {
       <OrderbookRow
         level={{ ...baseLevel, sizeChangeDirection: 'decreased' }}
         side="bid"
-        priceDecimals={2}
       />,
     )
     vi.advanceTimersByTime(0)
@@ -70,7 +63,6 @@ describe('OrderbookRow', () => {
       <OrderbookRow
         level={{ ...baseLevel, sizeChangeDirection: 'increased' }}
         side="ask"
-        priceDecimals={2}
       />,
     )
     vi.advanceTimersByTime(0)
@@ -82,11 +74,7 @@ describe('OrderbookRow', () => {
 
   it('has transparent background when sizeChangeDirection is undefined', () => {
     const { container } = render(
-      <OrderbookRow
-        level={baseLevel}
-        side="bid"
-        priceDecimals={2}
-      />,
+      <OrderbookRow level={baseLevel} side="bid" />,
     )
     const wrapper = container.firstChild as HTMLElement
     expect(wrapper.style.backgroundColor).toBe('transparent')

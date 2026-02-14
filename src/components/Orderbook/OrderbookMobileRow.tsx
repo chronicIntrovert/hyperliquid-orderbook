@@ -7,7 +7,6 @@ import { formatPrice, formatSize } from '../../utils/format'
 interface OrderbookMobileRowProps {
   bidLevel: OrderbookLevel | null
   askLevel: OrderbookLevel | null
-  priceDecimals: number
 }
 
 /**
@@ -18,7 +17,6 @@ interface OrderbookMobileRowProps {
 const OrderbookMobileRowComponent: FC<OrderbookMobileRowProps> = ({
   bidLevel,
   askLevel,
-  priceDecimals,
 }) => {
   const bidFlashStyle = useRowFlash(bidLevel?.sizeChangeDirection ?? undefined, 'bid')
   const askFlashStyle = useRowFlash(askLevel?.sizeChangeDirection ?? undefined, 'ask')
@@ -36,7 +34,7 @@ const OrderbookMobileRowComponent: FC<OrderbookMobileRowProps> = ({
         <div className="flex flex-1 min-w-0 items-center px-2 py-0.5 relative z-10">
           {bidLevel != null ? (
             <span className="text-bid">
-              {formatPrice(bidLevel.price, priceDecimals)}
+              {formatPrice(bidLevel.price)}
             </span>
           ) : (
             '\u00A0'
@@ -62,7 +60,7 @@ const OrderbookMobileRowComponent: FC<OrderbookMobileRowProps> = ({
         <div className="flex flex-1 min-w-0 items-center px-2 py-0.5 relative z-10">
           {askLevel != null ? (
             <span className="text-ask">
-              {formatPrice(askLevel.price, priceDecimals)}
+              {formatPrice(askLevel.price)}
             </span>
           ) : (
             '\u00A0'

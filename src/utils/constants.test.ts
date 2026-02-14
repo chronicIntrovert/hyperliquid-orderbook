@@ -10,7 +10,6 @@ import {
   TIER_API_PARAMS,
   TIER_INDICES,
   tierToLabel,
-  tierToPriceDecimals,
   tierToSubscription,
 } from './constants'
 
@@ -38,18 +37,6 @@ describe('constants', () => {
 
     it('maps tier 5 to nSigFigs 2', () => {
       expect(tierToSubscription(5)).toEqual({ nSigFigs: 2 })
-    })
-  })
-
-  describe('tierToPriceDecimals', () => {
-    it('returns 4 for tier 0 (BTC and ETH)', () => {
-      expect(tierToPriceDecimals(0, 'BTC')).toBe(4)
-      expect(tierToPriceDecimals(0, 'ETH')).toBe(4)
-    })
-
-    it('returns 0 for tier 5 (BTC and ETH)', () => {
-      expect(tierToPriceDecimals(5, 'BTC')).toBe(0)
-      expect(tierToPriceDecimals(5, 'ETH')).toBe(0)
     })
   })
 

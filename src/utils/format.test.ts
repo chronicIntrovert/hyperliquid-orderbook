@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { formatPrice, formatSize, formatSpread } from './format'
 
 describe('formatPrice', () => {
-  it('formats with at most two decimals (caps tier decimals)', () => {
-    expect(formatPrice(95000.1234, 2)).toBe('95,000.12')
-    expect(formatPrice(95000, 4)).toBe('95,000.00')
-    expect(formatPrice(95000.5678, 5)).toBe('95,000.57')
+  it('formats with two decimal places', () => {
+    expect(formatPrice(95000.1234)).toBe('95,000.12')
+    expect(formatPrice(95000)).toBe('95,000.00')
+    expect(formatPrice(95000.5678)).toBe('95,000.57')
   })
 })
 

@@ -10,14 +10,12 @@ const PlaceholderRow: FC = () => (
 interface OrderbookSideProps {
   levels: OrderbookLevel[]
   side: 'bid' | 'ask'
-  priceDecimals: number
   rows: number
 }
 
 export const OrderbookSide: FC<OrderbookSideProps> = ({
   levels,
   side,
-  priceDecimals,
   rows,
 }) => {
   const truncated =
@@ -34,12 +32,7 @@ export const OrderbookSide: FC<OrderbookSideProps> = ({
           <PlaceholderRow key={`placeholder-${i}`} />
         ))}
       {truncated.map((level: OrderbookLevel) => (
-        <OrderbookRow
-          key={level.price}
-          level={level}
-          side={side}
-          priceDecimals={priceDecimals}
-        />
+        <OrderbookRow key={level.price} level={level} side={side} />
       ))}
       {side === 'bid' &&
         Array.from({ length: placeholderCount }, (_, i) => (
