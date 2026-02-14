@@ -14,17 +14,24 @@ function useIsMobile(): boolean {
   return isMobile
 }
 
-/** Button that toggles the legend. Highlights (ring) only when open. */
+const MOBILE_ICON_SIZE = 'h-5 w-5'
+const DESKTOP_BUTTON_SIZE = 'h-5 w-5'
+const DESKTOP_ICON_SIZE = 'h-3.5 w-3.5'
+
+/** Button that toggles the legend. On mobile: larger tap target and icon. Highlights (ring) only when open. */
 export const InfoButton: FC<{
   open: boolean
   onToggle: () => void
-}> = ({ open, onToggle }) => (
+  isMobile?: boolean
+}> = ({ open, onToggle, isMobile = false }) => (
   <button
     type="button"
     onClick={onToggle}
     aria-label="Orderbook legend"
     aria-expanded={open}
-    className={`flex h-5 w-5 items-center justify-center rounded-full border transition-colors hover:border-secondary hover:text-secondary focus:outline-none focus:ring-0 ${
+    className={`flex items-center justify-center rounded-full border transition-colors hover:border-secondary hover:text-secondary focus:outline-none focus:ring-0 ${
+      isMobile ? 'min-h-[44px] min-w-[44px]' : DESKTOP_BUTTON_SIZE
+    } ${
       open
         ? 'border-secondary text-secondary ring-2 ring-secondary/50 ring-offset-2 ring-offset-panel'
         : 'border-elevated text-muted'
@@ -33,7 +40,7 @@ export const InfoButton: FC<{
     <svg
       viewBox="0 0 20 20"
       fill="currentColor"
-      className="h-3.5 w-3.5"
+      className={isMobile ? MOBILE_ICON_SIZE : DESKTOP_ICON_SIZE}
       aria-hidden="true"
     >
       <path
@@ -68,7 +75,7 @@ import { InfoTooltipContent } from './InfoTooltipContent'
 /**
  * Legend panel: Vaul drawer only.
  * - Desktop: side drawer from the left (direction="left").
- * - Mobile: bottom drawer, full-height snap so content is scrollable inside.
+ * - Mobile: bottom drawer at ~2/3 viewport height so orderbook remains partially visible; drag handle to close.
  */
 export const InfoLegend: FC<{
   open: boolean
@@ -82,7 +89,7 @@ export const InfoLegend: FC<{
       <Drawer.Content
         className={`fixed z-50 flex flex-col outline-none ${
           isMobile
-            ? 'bottom-0 left-0 right-0 max-h-[100dvh] rounded-t-xl border border-b border-bg-tertiary bg-bg-secondary/95 backdrop-blur-sm'
+            ? 'bottom-0 left-0 right-0 max-h-[66dvh] rounded-t-xl border border-b border-bg-tertiary bg-bg-secondary/95 backdrop-blur-sm'
             : 'left-0 top-0 h-full w-[min(20rem,100vw-2rem)] max-w-full border-r border-bg-tertiary bg-bg-secondary'
         } ${DRAWER_CONTENT_CLASS}`}
       >
@@ -112,14 +119,14 @@ export const InfoLegend: FC<{
   return (
     <>
       <div className="flex">
-        <InfoButton open={open} onToggle={() => onOpenChange(!open)} />
+        <InfoButton open={open} onToggle={() => onOpenChange(!open)} isMobile={isMobile} />
       </div>
 
       {isMobile ? (
         <Drawer.Root
           {...rootProps}
           direction="bottom"
-          snapPoints={[1]}
+          snapPoints={[2 / 3]}
           fadeFromIndex={0}
         >
           {drawerContent}
