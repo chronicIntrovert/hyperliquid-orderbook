@@ -46,14 +46,15 @@ export const InfoButton: FC<{
 )
 
 const DRAWER_CONTENT_CLASS =
-  'flex flex-1 flex-col min-h-0 rounded-t-xl border-bg-tertiary bg-bg-secondary shadow-xl outline-none'
+  'flex flex-1 flex-col min-h-0 rounded-t-xl border-elevated bg-panel shadow-xl outline-none'
 
-/** Scrollable area for legend content; must be in a flex container with min-h-0 so it can shrink and scroll. */
+/** Scrollable area for legend content. data-vaul-no-drag so only the handle closes the drawer on drag. */
 const LegendScrollArea: FC<{ children: React.ReactNode; className?: string }> = ({
   children,
   className = '',
 }) => (
   <div
+    data-vaul-no-drag
     className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 text-sm leading-relaxed text-secondary sm:text-xs ${className}`}
     role="region"
     aria-label="Legend content"
@@ -86,7 +87,7 @@ export const InfoLegend: FC<{
         } ${DRAWER_CONTENT_CLASS}`}
       >
         {isMobile && (
-          <Drawer.Handle className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-elevated" />
+          <Drawer.Handle className="mx-auto mt-3 h-1.5 w-14 shrink-0 rounded-full bg-elevated touch-manipulation" aria-label="Drag to close" />
         )}
         <Drawer.Title className="sr-only">Orderbook Legend</Drawer.Title>
             <Drawer.Description className="sr-only">

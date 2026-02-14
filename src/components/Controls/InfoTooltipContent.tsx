@@ -21,20 +21,21 @@ const Ask: FC<{ children: React.ReactNode }> = ({ children }) => (
 /** Legend copy: columns, depth bars, row flashes, spread. Used inside the info drawer. */
 export const InfoTooltipContent: FC = () => (
   <>
-    <h4 className="mb-2 text-sm font-semibold text-primary">
+    <h4 className="mb-2 text-lg font-semibold text-primary">
       Orderbook Legend
     </h4>
-    <Section title="Columns">
-      <dt className="text-primary">Price</dt>
+    <Section title="Price">
       <dd>
         The aggregated price level. <Bid>Green</Bid> = bids (buy
         orders), <Ask>red</Ask> = asks (sell orders).
       </dd>
-      <dt className="text-primary">Size</dt>
+    </Section>
+    <Section title="Size">
       <dd>
         Quantity at that price level, in the selected coin (BTC or ETH).
       </dd>
-      <dt className="text-primary">Total</dt>
+    </Section>
+    <Section title="Total">
       <dd>
         Cumulative size from the best price outward, in the selected coin.
         Shows how much liquidity you&apos;d need to consume to reach that level.
