@@ -14,28 +14,28 @@ function useIsMobile(): boolean {
   return isMobile
 }
 
-const DESKTOP_BUTTON_SIZE = 'h-5 w-5'
+const BUTTON_SIZE = 'h-[24px] w-[24px]'
 
-/** Button that toggles the legend. On mobile: larger tap target and icon. Highlights (ring) only when open. */
+/** Button that toggles the legend. Highlights (ring) only when open. */
 export const InfoButton: FC<{
   open: boolean
   onToggle: () => void
-  isMobile?: boolean
-}> = ({ open, onToggle, isMobile = false }) => (
+}> = ({ open, onToggle }) => (
   <button
     type="button"
     onClick={onToggle}
     aria-label="Orderbook legend"
     aria-expanded={open}
-    className={`flex items-center justify-center rounded-full border transition-colors hover:border-secondary hover:text-secondary focus:outline-none focus:ring-0 ${isMobile ? 'min-h-[24px] min-w-[24px]' : DESKTOP_BUTTON_SIZE
-      } ${open
+    className={`flex shrink-0 items-center justify-center rounded-full border transition-colors hover:border-secondary hover:text-secondary focus:outline-none focus:ring-0 ${BUTTON_SIZE} ${
+      open
         ? 'border-secondary text-secondary ring-2 ring-secondary/50 ring-offset-2 ring-offset-panel'
         : 'border-elevated text-muted'
-      }`}
+    }`}
   >
     <svg
       viewBox="0 0 20 20"
       fill="currentColor"
+      className="h-[24px] w-[24px]"
       aria-hidden="true"
     >
       <path
@@ -111,7 +111,7 @@ export const InfoLegend: FC<{
   return (
     <>
       <div className="flex">
-        <InfoButton open={open} onToggle={() => onOpenChange(!open)} isMobile={isMobile} />
+        <InfoButton open={open} onToggle={() => onOpenChange(!open)} />
       </div>
 
       {isMobile ? (
