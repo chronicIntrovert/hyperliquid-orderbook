@@ -21,7 +21,7 @@ const mockBook: ProcessedOrderbook = {
   timestamp: 0,
 }
 
-function renderOrderbook(coin: 'BTC' | 'ETH' = 'BTC', tier = 0) {
+function renderOrderbook(coin: 'BTC' | 'ETH' = 'BTC', tier = 0 as const) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })
