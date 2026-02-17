@@ -1,5 +1,5 @@
 ---
-description: When changing code, identify and update affected tests so they stay in sync
+description: When changing code, identify and update affected tests so they stay in sync and meet coverage target
 globs: src/**/*
 alwaysApply: true
 ---
@@ -11,5 +11,6 @@ When you change behavior, types, or public APIs in `src/`:
 1. **Identify affected tests**: Find tests that import or exercise the changed code (e.g. `src/lib/orderbook.ts` → `src/lib/orderbook.test.ts`, hooks → hook tests, `tests/*.spec.ts` for E2E).
 2. **Update expectations**: Adjust assertions, mocks, and fixtures to match the new behavior or types. Fix any now-invalid references (renamed types, changed constants, new parameters).
 3. **Run the suite**: `npm run test` and `npm run test:e2e` (if E2E might be affected). Fix failures; do not leave tests skipped or commented out instead of updating them.
+4. **Check coverage**: Run `npm run test:coverage`. We aim for **80% coverage** (statements, branches, functions, lines). If coverage falls below 80% after your change, add or update tests until the project meets the 80% target. Treat coverage as part of the same change set—do not merge with coverage below 80% unless explicitly agreed as an exception.
 
 Refactors (e.g. renaming `nSigFigs` → `precisionLevel`) should include corresponding test updates in the same change set.
